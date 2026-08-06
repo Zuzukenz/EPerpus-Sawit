@@ -2,23 +2,29 @@
 
 namespace App\Providers;
 
+use App\Contracts\Repositories\BookRepositoryInterface;
+use App\Contracts\Repositories\BorrowingRepositoryInterface;
+use App\Contracts\Repositories\MemberRepositoryInterface;
+use App\Contracts\Services\BorrowingServiceInterface;
+use App\Repositories\BookRepository;
+use App\Repositories\BorrowingRepository;
+use App\Repositories\MemberRepository;
+use App\Services\BorrowingService;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Foundation\AliasLoader;
 
-class AppServiceProvider extends ServiceProvider
+class RepositoryServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
-        $loader = AliasLoader::getInstance();
-        $loader->alias('SawitDB', \WowoEngine\SawitDB\Facades\SawitDB::class);
+        // Repository Bindings
+        $this->app->bind(BookRepositoryInterface::class, BookRepository::class);
+        $this->app->bind(MemberRepositoryInterface::class, MemberRepository::class);
+        $this->app->bind(BorrowingRepositoryInterface::class, BorrowingRepository::class);
+
+        // Service Bindings
+        $this->app->bind(BorrowingServiceInterface::class, BorrowingService::class);
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         //
