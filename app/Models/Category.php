@@ -2,14 +2,25 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
-    protected $guarded = ['id'];
+    use HasFactory;
 
-    public function books(): HasMany
+    protected $guarded = ['id'];
+    protected $table = 'categories';
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    /**
+     * Get the books for the category.
+     */
+    public function books()
     {
         return $this->hasMany(Book::class);
     }
