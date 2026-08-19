@@ -25,8 +25,8 @@ Route::middleware('auth')->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Books management
-    Route::resource('books', BookController::class);
+    // Books management - COMMENTED OUT (moved to API)
+    // Route::resource('books', BookController::class);
 
     // Members management
     Route::resource('members', MemberController::class);
