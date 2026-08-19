@@ -24,14 +24,37 @@ class DatabaseSeeder extends Seeder
 
         // Create Categories
         $categories = [
-            ['name' => 'Fiksi', 'description' => 'Buku cerita dan novel'],
-            ['name' => 'Non-Fiksi', 'description' => 'Buku pengetahuan dan referensi'],
-            ['name' => 'Teknologi', 'description' => 'Buku tentang teknologi dan pemrograman'],
-            ['name' => 'Bisnis', 'description' => 'Buku tentang bisnis dan entrepreneurship'],
-            ['name' => 'Pendidikan', 'description' => 'Buku pelajaran dan akademik'],
-            ['name' => 'Seni & Budaya', 'description' => 'Buku tentang seni dan budaya'],
+            [
+                'name' => 'Fiksi',
+                'slug' => 'fiksi',
+                'description' => 'Buku cerita dan novel',
+            ],
+            [
+                'name' => 'Non-Fiksi',
+                'slug' => 'non-fiksi',
+                'description' => 'Buku pengetahuan dan referensi',
+            ],
+            [
+                'name' => 'Teknologi',
+                'slug' => 'teknologi',
+                'description' => 'Buku tentang teknologi dan pemrograman',
+            ],
+            [
+                'name' => 'Bisnis',
+                'slug' => 'bisnis',
+                'description' => 'Buku tentang bisnis dan entrepreneurship',
+            ],
+            [
+                'name' => 'Pendidikan',
+                'slug' => 'pendidikan',
+                'description' => 'Buku pelajaran dan akademik',
+            ],
+            [
+                'name' => 'Seni & Budaya',
+                'slug' => 'seni-budaya',
+                'description' => 'Buku tentang seni dan budaya',
+            ],
         ];
-
         foreach ($categories as $category) {
             Category::create($category);
         }

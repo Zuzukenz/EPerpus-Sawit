@@ -21,11 +21,11 @@ class DashboardController extends Controller
         $totalBorrowings = Borrowing::count();
 
         // Get low stock books
-        $lowStockBooks = Book::where('quantity', '<', 5)->get();
+        $lowStockBooks = Book::where('stock', '<', 5)->get();
 
         // Get overdue borrowings
         $overdueBorrowings = Borrowing::where('status', 'borrowed')
-            ->where('return_date', '<', Carbon::now())
+            ->where('due_date', '<', Carbon::now())
             ->with('member')
             ->get();
 
@@ -36,8 +36,7 @@ class DashboardController extends Controller
             ->get();
 
         // Get total fine collected
-        $totalFine = Borrowing::where('status', 'returned')
-            ->sum('fine');
+        $totalFine = 0;
 
         return view('dashboard', compact(
             'totalBooks',
