@@ -2,35 +2,42 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
-use App\Models\Member;
-use App\Models\Book;
-use App\Models\Borrowing;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\Category;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
+    /**
+     * Seed the application's database.
+     */
     public function run(): void
     {
-        Category::create(['name' => 'Pemrograman & IT', 'slug' => 'pemrograman-it']);
-        Category::create(['name' => 'Novel & Fiksi', 'slug' => 'novel-fiksi']);
-        Category::create(['name' => 'Sains & Matematika', 'slug' => 'sains-matematika']);
-
-        Member::factory(15)->create();
-
-        Book::factory(30)->create();
-
-        $member = Member::first();
-        $book = Book::first();
-
-        $borrowing = Borrowing::create([
-            'member_id' => $member->id,
-            'borrow_code' => 'TRX-' . rand(10000, 99999),
-            'borrow_date' => now(),
-            'due_date' => now()->addDays(7),
-            'status' => 'borrowed'
+        // Create Admin User
+        User::create([
+            'name' => 'Admin EPerpus',
+            'email' => 'admin@eperpus.local',
+            'password' => Hash::make('password123'),
+            'email_verified_at' => now(),
         ]);
 
-        $borrowing->books()->attach($book->id, ['quantity' => 1]);
+        // Create Categories
+        $categories = [
+            ['name' => 'Fiksi', 'description' => 'Buku cerita dan novel'],
+            ['name' => 'Non-Fiksi', 'description' => 'Buku pengetahuan dan referensi'],
+            ['name' => 'Teknologi', 'description' => 'Buku tentang teknologi dan pemrograman'],
+            ['name' => 'Bisnis', 'description' => 'Buku tentang bisnis dan entrepreneurship'],
+            ['name' => 'Pendidikan', 'description' => 'Buku pelajaran dan akademik'],
+            ['name' => 'Seni & Budaya', 'description' => 'Buku tentang seni dan budaya'],
+        ];
+
+        foreach ($categories as $category) {
+            Category::create($category);
+        }
+
+        echo "✅ Database seeded successfully!\n";
+        echo "Admin Email: admin@eperpus.local\n";
+        echo "Admin Password: password123\n";
     }
 }
