@@ -33,8 +33,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('books.index') }}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
-                        📚 Kelola Buku
+                    <a href="javascript:void(0);" onclick="alert('Kelola Buku tersedia melalui API: /api/books')" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100 cursor-pointer">
+                        📚 Kelola Buku (API)
                     </a>
                 </li>
                 <li>
