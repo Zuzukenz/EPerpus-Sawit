@@ -11,7 +11,7 @@
 | Mhd Fathan Al Aziz | Backend Developer |
 | Farand Altaf Emian | Database Engineer |
 
-## Fitur
+## Fitur (Terencana)
 
 - Login Admin
 - CRUD Data Buku
