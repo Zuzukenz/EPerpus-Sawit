@@ -1,5 +1,5 @@
 const SUPABASE_URL = 'https://bqyrhbezlurbbrswaxiw.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJxeXJoYmV6bHVyYmJyc3dheGl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjQwODI0NTgsImV4cCI6MjAzOTY1ODQ1OH0.SgBvDVT5FrHQ-GtHkUqBG9MJ2ZhOtLw5qJc_qN5T5ww';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJxeXJoYmV6bHVyYmJyc3dheGl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwOTM5OTUsImV4cCI6MjEwMjY2OTk5NX0.sGZCJ9sDoVm1Wg4yhoLXzumV_Bf2k2I_9kGmZD9YkAU';
 
 const kotakLogin = document.getElementById('kotak-login');
 const kotakDashboard = document.getElementById('kotak-dashboard');
