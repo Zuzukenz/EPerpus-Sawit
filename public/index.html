@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Perpus - Sistem Perpustakaan Digital</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="kotak-login" class="kotak">
+    <h2>Login Petugas E-Perpus</h2>
+    <form id="form-login">
+      <div class="form-grup">
+        <label>Email:</label>
+        <input type="email" id="email" value="admin@eperpus.com" required>
+      </div>
+      <div class="form-grup">
+        <label>Password:</label>
+        <input type="password" id="password" value="password123" required>
+      </div>
+      <button type="submit" class="btn biru">Masuk Sistem</button>
+    </form>
+    <p id="pesan-error" style="color: red; margin-top: 10px;"></p>
+  </div>
+
+  <div id="kotak-dashboard" class="kotak sembunyi">
+    <div class="flex-header">
+      <h2>Katalog Buku E-Perpus</h2>
+      <button id="btn-logout" class="btn merah">Keluar (Logout)</button>
+    </div>
+    <hr style="margin: 15px 0;">
+
+    <h3>Tambah Katalog Buku Baru</h3>
+    <form id="form-buku" style="margin-top: 10px; margin-bottom: 20px;">
+      <div class="form-grup">
+        <label>Kategori ID:</label>
+        <input type="number" id="category-id" placeholder="Contoh: 1 (Pemrograman & IT)" required>
+      </div>
+      <div class="form-grup">
+        <label>Judul Buku:</label>
+        <input type="text" id="title" placeholder="Judul Buku" required>
+      </div>
+      <div class="flex-row">
+        <div class="form-grup Set-50">
+          <label>Penulis:</label>
+          <input type="text" id="author" placeholder="Nama Penulis" required>
+        </div>
+        <div class="form-grup Set-50">
+          <label>Penerbit:</label>
+          <input type="text" id="publisher" placeholder="Nama Penerbit" required>
+        </div>
+      </div>
+      <div class="flex-row">
+        <div class="form-grup Set-50">
+          <label>Tahun Terbit:</label>
+          <input type="number" id="published-year" placeholder="2024" required>
+        </div>
+        <div class="form-grup Set-50">
+          <label>Stok Eksemplar:</label>
+          <input type="number" id="stock" placeholder="Jumlah Stok" required>
+        </div>
+      </div>
+      <button type="submit" class="btn hijau">Simpan Buku</button>
+    </form>
+
+    <h3>Daftar Koleksi Buku</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Judul Buku</th>
+          <th>Kategori</th>
+          <th>Penulis / Penerbit</th>
+          <th>Tahun</th>
+          <th>Stok</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="tabel-buku">
+      </tbody>
+    </table>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
