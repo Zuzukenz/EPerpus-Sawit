@@ -1,4 +1,5 @@
-const URL_API = 'http://127.0.0.1:8000/api';
+const SUPABASE_URL = 'https://bqyrhbezlurbbrswaxiw.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJxeXJoYmV6bHVyYmJyc3dheGl3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjQwODI0NTgsImV4cCI6MjAzOTY1ODQ1OH0.SgBvDVT5FrHQ-GtHkUqBG9MJ2ZhOtLw5qJc_qN5T5ww';
 
 const kotakLogin = document.getElementById('kotak-login');
 const kotakDashboard = document.getElementById('kotak-dashboard');
@@ -7,6 +8,21 @@ const pesanError = document.getElementById('pesan-error');
 const btnLogout = document.getElementById('btn-logout');
 const formBuku = document.getElementById('form-buku');
 const tabelBuku = document.getElementById('tabel-buku');
+
+async function callSupabaseAPI(endpoint, method = 'GET', body = null) {
+  const token = localStorage.getItem('eperpus_token');
+  const options = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${token || SUPABASE_ANON_KEY}`
+    }
+  };
+  if (body) options.body = JSON.stringify(body);
+  
+  return fetch(`${SUPABASE_URL}/rest/v1${endpoint}`, options).then(r => r.json());
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   let token = localStorage.getItem('eperpus_token');
@@ -22,11 +38,11 @@ formLogin.addEventListener('submit', async function(e) {
   let passwordInput = document.getElementById('password').value;
 
   try {
-    let respons = await fetch(`${URL_API}/login`, {
+    let respons = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'apikey': SUPABASE_ANON_KEY
       },
       body: JSON.stringify({
         email: emailInput,
@@ -35,35 +51,27 @@ formLogin.addEventListener('submit', async function(e) {
     });
 
     let hasil = await respons.json();
-    if (respons.ok && hasil.status) {
+    if (respons.ok && hasil.access_token) {
       localStorage.setItem('eperpus_token', hasil.access_token);
       bukaDashboard();
       ambilDataBuku();
     } else {
-      pesanError.textContent = hasil.message || "Login gagal: Email atau Password salah.";
+      pesanError.textContent = hasil.error_description || "Login gagal: Email atau Password salah.";
     }
   } catch (error) {
     console.error("Kesalahan Login:", error);
-    pesanError.textContent = "Gagal terhubung ke server backend E-Perpus!";
+    pesanError.textContent = "Gagal terhubung ke Supabase!";
   }
 });
 
 async function ambilDataBuku() {
-  let token = localStorage.getItem('eperpus_token');
   try {
-    let respons = await fetch(`${URL_API}/books`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json'
-      }
-    });
-
-    let hasil = await respons.json();
-    if (respons.ok && hasil.status) {
+    let hasil = await callSupabaseAPI('/books?select=*,category:categories(name)');
+    
+    if (Array.isArray(hasil)) {
       let barisTabel = '';
       let nomor = 1;
-      hasil.data.forEach(buku => {
+      hasil.forEach(buku => {
         let namaKategori = buku.category ? buku.category.name : '-';
         barisTabel += `
           <tr>
@@ -80,8 +88,10 @@ async function ambilDataBuku() {
         `;
       });
       tabelBuku.innerHTML = barisTabel;
-    } else if (respons.status === 401) {
+    } else if (hasil.code === 'PGRST301') {
       aksiLogout();
+    } else {
+      console.error("Error memuat buku:", hasil);
     }
   } catch (error) {
     console.error("Gagal memuat katalog buku:", error);
@@ -90,29 +100,19 @@ async function ambilDataBuku() {
 
 formBuku.addEventListener('submit', async function(e) {
   e.preventDefault();
-  let token = localStorage.getItem('eperpus_token');
   let payloadBuku = {
-    category_id: document.getElementById('category-id').value,
+    category_id: parseInt(document.getElementById('category-id').value),
     title: document.getElementById('title').value,
     author: document.getElementById('author').value,
     publisher: document.getElementById('publisher').value,
-    published_year: document.getElementById('published-year').value,
-    stock: document.getElementById('stock').value
+    published_year: parseInt(document.getElementById('published-year').value),
+    stock: parseInt(document.getElementById('stock').value)
   };
 
   try {
-    let respons = await fetch(`${URL_API}/books`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(payloadBuku)
-    });
-
-    let hasil = await respons.json();
-    if (respons.ok && hasil.status) {
+    let hasil = await callSupabaseAPI('/books', 'POST', payloadBuku);
+    
+    if (!hasil.code) {
       formBuku.reset();
       ambilDataBuku();
       alert('Buku berhasil ditambahkan ke katalog!');
@@ -126,18 +126,11 @@ formBuku.addEventListener('submit', async function(e) {
 
 async function hapusBuku(id) {
   if (!confirm("Apakah Anda yakin ingin menghapus buku ini dari perpustakaan?")) return;
-  let token = localStorage.getItem('eperpus_token');
 
   try {
-    let respons = await fetch(`${URL_API}/books/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json'
-      }
-    });
-
-    if (respons.ok) {
+    let hasil = await callSupabaseAPI(`/books?id=eq.${id}`, 'DELETE');
+    
+    if (!hasil.code || hasil.code === 204) {
       ambilDataBuku();
     } else {
       alert('Gagal menghapus buku dari server.');
@@ -148,22 +141,10 @@ async function hapusBuku(id) {
 }
 
 async function aksiLogout() {
-  let token = localStorage.getItem('eperpus_token');
-  try {
-    await fetch(`${URL_API}/logout`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json'
-      }
-    });
-  } catch (error) {
-    console.error("Logout error:", error);
-  }
-
   localStorage.removeItem('eperpus_token');
   kotakLogin.classList.remove('sembunyi');
   kotakDashboard.classList.add('sembunyi');
+  pesanError.textContent = '';
 }
 
 btnLogout.addEventListener('click', aksiLogout);
